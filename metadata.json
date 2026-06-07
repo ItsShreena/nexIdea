@@ -1,0 +1,6 @@
+{
+  "name": "NexIdea",
+  "description": "Turn startup ideas into actionable business plans and validation insights using server-side Gemini API.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
