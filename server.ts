@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
-import { analyzeStartupIdea } from "./server/gemini";
+import { analyzeStartupIdea } from "./server/gemini.js";
 import dotenv from "dotenv";
 
 dotenv.config();
