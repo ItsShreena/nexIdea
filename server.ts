@@ -2,35 +2,22 @@ import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
 import { analyzeStartupIdea } from "./server/gemini";
+import dotenv from "dotenv";
 
+dotenv.config();
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+  const PORT = 3001;
+
 
   // Body parser limit expanded for rich text and complex payloads
-  app.use(express.json({ limit: '10mb' }));
-
-  // Strict Token Validation Middleware
-  // Blocks requests to analytical pipelines if authorization is missing
   app.use("/api/analyze", (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ 
-        error: "Access Denied. Only authenticated foundership tokens can request startup analysis matrix." 
-      });
-    }
-    
-    // Extract token
-    const token = authHeader.substring(7);
-    if (!token || token === "null" || token === "undefined") {
-      return res.status(401).json({ 
-        error: "Access Denied. Invalid or inactive security token. Please sign in." 
-      });
-    }
-    
-    next();
+  next();
   });
-
   // Client Waitlist endpoint (state-free, returns successful alignment)
   app.post("/api/waitlist", (req, res) => {
     try {
@@ -82,7 +69,7 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
+  app.listen(PORT, () => {
     console.log(`NexIdea Core Server running securely on http://0.0.0.0:${PORT}`);
   });
 }
