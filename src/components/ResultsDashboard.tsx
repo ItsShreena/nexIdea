@@ -978,7 +978,7 @@ export default function ResultsDashboard({
               </h3>
 
               <div className="space-y-4">
-                {result.monetizationStrategy.map((mon, idx) => (
+                {(result.monetizationStrategy || []).map((mon, idx) => (
                   <div key={idx} className="p-4 rounded-xl bg-white/[0.02] border border-white/5">
                     <div className="flex justify-between items-center mb-1.5">
                       <span className="font-bold text-sm text-white tracking-tight">{mon.model}</span>
@@ -1038,7 +1038,7 @@ export default function ResultsDashboard({
 
           <h4 className="font-bold text-sm">Competitor Saturation mapping</h4>
           <div className="grid grid-cols-3 gap-4">
-            {result.competitorAnalysis.map((c, i) => (
+            {(result.competitorAnalysis || []).map((c, i) => (
               <div key={i} className="border border-black/20 p-3 rounded">
                 <span className="font-bold text-xs uppercase block">{c.name}</span>
                 <p className="text-[10px] text-black/70 mb-2">{c.description}</p>
@@ -1052,8 +1052,10 @@ export default function ResultsDashboard({
 
           <h4 className="font-bold text-sm">System Architecture</h4>
           <p className="text-xs leading-relaxed">
-            Frontend: {result.technicalArchitecture.frontend} | Backend: {result.technicalArchitecture.backend} | Database: {result.technicalArchitecture.database} <br/>
-            Infrastructure: {result.technicalArchitecture.architecture}
+            Frontend: {result.technicalArchitecture?.frontend ?? "Not provided"} 
+            {result.technicalArchitecture?.backend ?? "Not provided"}
+            {result.technicalArchitecture?.database ?? "Not provided"}
+            {result.technicalArchitecture?.architecture ?? "Not provided"}
           </p>
 
           <h4 className="font-bold text-sm">Revenue forecasting & pricing models</h4>

@@ -310,7 +310,7 @@ export default function Dashboard({
                                 {rep.name}
                               </span>
                               <span className="shrink-0 rounded bg-brand-orange/5 border border-brand-orange/10 px-1.5 py-0.5 text-[8.5px] font-mono text-brand-orange font-bold">
-                                {rep.result.overallScore.toFixed(1)} VIAB
+                              {rep.result?.overallScore?.toFixed?.(1) || "N/A"} VIAB
                               </span>
                             </div>
                             <span className="block text-[11px] text-neutral-500 line-clamp-1 font-sans">
