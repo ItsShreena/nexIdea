@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { 
-  ArrowLeft, Download, Share2, RefreshCw, Star, Info, Layers, 
-  MapPin, ShieldAlert, Cpu, Heart, Coins, Target, Terminal, 
+import {
+  ArrowLeft, Download, Share2, RefreshCw, Star, Info, Layers,
+  MapPin, ShieldAlert, Cpu, Heart, Coins, Target, Terminal,
   TrendingUp, Compass, Gift, CalendarCheck, Lightbulb, Check, AlertTriangle, AlertCircle
 } from 'lucide-react';
 import { SavedReport, AnalysisResult } from '../types';
@@ -90,7 +90,7 @@ export default function ResultsDashboard({
       doc.setFontSize(size);
       doc.setFont('helvetica', isBold ? 'bold' : 'normal');
       doc.setTextColor(color[0], color[1], color[2]);
-      
+
       const lines = doc.splitTextToSize(text || 'N/A', 180);
       lines.forEach((line: string) => {
         if (posY > 270) {
@@ -106,18 +106,18 @@ export default function ResultsDashboard({
     // --- COVERS & INITIATION CARD ---
     doc.setFillColor(15, 23, 42); // slate-900 background banner card
     doc.rect(15, 15, 180, 42, 'F');
-    
+
     doc.setFontSize(9);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(234, 88, 12); // brand-orange accent
     doc.text("NEXIDEA VENTURE ASSESSMENT ENGINE", 22, 25);
-    
+
     // Auto-expand or limit name size for display design on cover
     doc.setFontSize(20);
     doc.setFont('helvetica', 'bold');
     doc.setTextColor(255, 255, 255);
     doc.text(report.name, 22, 35);
-    
+
     // Overall Viability Score card on the right
     doc.setFillColor(234, 88, 12);
     doc.rect(142, 21, 43, 26, 'F');
@@ -141,7 +141,7 @@ export default function ResultsDashboard({
       doc.setTextColor(185, 28, 28);
       doc.text("CRITICAL IMPEDIMENT: SPECULATIVE SCIENCE DETECTED", 20, posY);
       posY += 5;
-      
+
       doc.setFontSize(8.5);
       doc.setFont('helvetica', 'normal');
       doc.setTextColor(153, 27, 27);
@@ -170,34 +170,34 @@ export default function ResultsDashboard({
     // --- PAGE 2: METRIC SCORE PROFILE & BALANCED REASONINGS ---
     doc.addPage();
     drawPageHeader();
-    
+
     addHeading("Strategic Venture Diagnostics", 1);
     addText("NexIdea executes a multi-factor risk simulation of the startup proposal. Parameters below model core operational bottlenecks.", 9, false, [100, 110, 120], 5);
 
     scoreKeys.forEach((key) => {
       const label = scoreLabels[key] || String(key);
       const { score, reasoning } = getScoreDataSafe(key);
-      
+
       if (posY > 245) {
         doc.addPage();
         drawPageHeader();
       }
-      
+
       doc.setFontSize(11);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(15, 23, 42);
       doc.text(label, 15, posY);
-      
+
       doc.setFontSize(11);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(234, 88, 12);
       doc.text(`${score}/10`, 183, posY);
       posY += 4;
-      
+
       // Paint score progress line
       doc.setFillColor(241, 245, 249);
       doc.rect(15, posY, 180, 2, 'F');
-      
+
       // Color matching algorithm
       if (key === 'executionComplexity') {
         doc.setFillColor(score >= 8 ? 239 : 16, score >= 8 ? 68 : 185, score >= 8 ? 68 : 129); // high complexity is red
@@ -206,7 +206,7 @@ export default function ResultsDashboard({
       }
       doc.rect(15, posY, score * 18, 2, 'F');
       posY += 5;
-      
+
       addText(reasoning, 8.5, false, [71, 85, 105], 4.5);
     });
 
@@ -223,15 +223,15 @@ export default function ResultsDashboard({
           doc.addPage();
           drawPageHeader();
         }
-        
+
         doc.setFontSize(11.5);
         doc.setFont('helvetica', 'bold');
         doc.setTextColor(15, 23, 42);
         doc.text(`Segment Actor: ${comp.name}`, 15, posY);
         posY += 4.5;
-        
+
         addText(comp.description, 9, false, [71, 85, 105], 2.5);
-        
+
         // Competitor Strengths list
         doc.setFontSize(8.5);
         doc.setFont('helvetica', 'bold');
@@ -242,7 +242,7 @@ export default function ResultsDashboard({
           addText(`* ${s}`, 8.5, false, [51, 65, 85], 1);
         });
         posY += 2;
-        
+
         // Competitor Weaknesses list
         doc.setFontSize(8.5);
         doc.setFont('helvetica', 'bold');
@@ -257,16 +257,16 @@ export default function ResultsDashboard({
     } else {
       addText("No critical competitor overlapping identified during validation sweeps.", 9, false, [71, 85, 105], 5);
     }
-    
+
     // SWOT Sections
     if (posY > 180) {
       doc.addPage();
       drawPageHeader();
     }
-    
+
     addHeading("SWOT Strategic Diagnostic Matrix", 2);
     const swot = result.swotAnalysis || { strengths: [], weaknesses: [], opportunities: [], threats: [] };
-    
+
     const renderSwotBlock = (title: string, list: string[], fillBg: [number, number, number], fontColor: [number, number, number]) => {
       if (posY > 235) {
         doc.addPage();
@@ -279,7 +279,7 @@ export default function ResultsDashboard({
       doc.setTextColor(fontColor[0], fontColor[1], fontColor[2]);
       doc.text(title, 18, posY + 3.8);
       posY += 7;
-      
+
       if (list && list.length > 0) {
         list.forEach((val) => {
           addText(`+ ${val}`, 8.5, false, [60, 70, 85], 1);
@@ -289,7 +289,7 @@ export default function ResultsDashboard({
       }
       posY += 3;
     };
-    
+
     renderSwotBlock("S - INTERNAL STRENGTHS", swot.strengths, [236, 253, 245], [5, 150, 105]);
     renderSwotBlock("W - INTERNAL WEAKNESSES", swot.weaknesses, [254, 242, 242], [220, 38, 38]);
     renderSwotBlock("O - EXTERNAL OPPORTUNITIES", swot.opportunities, [239, 246, 255], [37, 99, 235]);
@@ -314,7 +314,7 @@ export default function ResultsDashboard({
       doc.setTextColor(15, 23, 42);
       doc.text(phItem.phase, 15, posY);
       posY += 4.5;
-      
+
       if (phItem.features && phItem.features.length > 0) {
         phItem.features.forEach((feature) => {
           addText(`- ${feature}`, 8.5, false, [71, 85, 105], 1);
@@ -325,7 +325,7 @@ export default function ResultsDashboard({
 
     addHeading("Technical Architecture Stack", 2);
     const archData = result.technicalArchitecture || { frontend: '', backend: '', database: '', architecture: '' };
-    
+
     const writeTechElement = (labelName: string, textValue: string) => {
       if (posY > 250) {
         doc.addPage();
@@ -356,7 +356,7 @@ export default function ResultsDashboard({
       doc.setTextColor(15, 23, 42);
       doc.text(ms.model, 15, posY);
       posY += 4;
-      
+
       addText(`Pricing Formula: ${ms.pricing}`, 8.5, true, [234, 88, 12], 1);
       addText(ms.description, 8.5, false, [71, 85, 105], 3);
     });
@@ -394,7 +394,7 @@ export default function ResultsDashboard({
       doc.setTextColor(15, 23, 42);
       doc.text(fr.year, 15, posY);
       posY += 4;
-      
+
       doc.setFontSize(8.5);
       doc.setFont('helvetica', 'bold');
       doc.setTextColor(234, 88, 12);
@@ -486,7 +486,7 @@ export default function ResultsDashboard({
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-10 md:py-16 select-none relative z-10 font-sans" id="results-view">
-      
+
       {/* Decorative Warm Background Radial Glow (User Request) */}
       <div className="absolute top-[5%] left-1/2 -translate-x-1/2 w-full max-w-6xl h-[280px] bg-[radial-gradient(ellipse_60%_50%_at_50%_0%,rgba(255,107,0,0.08),transparent_100%)] pointer-events-none"></div>
 
@@ -598,7 +598,7 @@ export default function ResultsDashboard({
                     </div>
                     {/* Linear score meter */}
                     <div className="h-2 w-full rounded-full bg-white/5 overflow-hidden mb-2">
-                      <div 
+                      <div
                         className={`h-full rounded-full transition-all duration-1000 ${getScoreColor(key, score)}`}
                         style={{ width: `${score * 10}%` }}
                       ></div>
@@ -620,11 +620,10 @@ export default function ResultsDashboard({
       <div className="flex flex-wrap gap-1.5 border-b border-white/5 mb-8 no-print select-none">
         <button
           onClick={() => setActiveTab('market')}
-          className={`px-4 py-2.5 rounded-t-xl text-xs font-semibold tracking-tight transition-all flex items-center gap-2 focus:outline-none ${
-            activeTab === 'market' 
-              ? 'bg-brand-orange/10 border-b-2 border-brand-orange text-white bg-white/5' 
-              : 'text-white/50 hover:text-white hover:bg-white/[0.02]'
-          }`}
+          className={`px-4 py-2.5 rounded-t-xl text-xs font-semibold tracking-tight transition-all flex items-center gap-2 focus:outline-none ${activeTab === 'market'
+            ? 'bg-brand-orange/10 border-b-2 border-brand-orange text-white bg-white/5'
+            : 'text-white/50 hover:text-white hover:bg-white/[0.02]'
+            }`}
         >
           <Target size={14} />
           <span>Validation & Market</span>
@@ -632,11 +631,10 @@ export default function ResultsDashboard({
 
         <button
           onClick={() => setActiveTab('strategy')}
-          className={`px-4 py-2.5 rounded-t-xl text-xs font-semibold tracking-tight transition-all flex items-center gap-2 focus:outline-none ${
-            activeTab === 'strategy' 
-              ? 'bg-brand-orange/10 border-b-2 border-brand-orange text-white bg-white/5' 
-              : 'text-white/50 hover:text-white hover:bg-white/[0.02]'
-          }`}
+          className={`px-4 py-2.5 rounded-t-xl text-xs font-semibold tracking-tight transition-all flex items-center gap-2 focus:outline-none ${activeTab === 'strategy'
+            ? 'bg-brand-orange/10 border-b-2 border-brand-orange text-white bg-white/5'
+            : 'text-white/50 hover:text-white hover:bg-white/[0.02]'
+            }`}
         >
           <Compass size={14} />
           <span>SWOT & Competition</span>
@@ -644,11 +642,10 @@ export default function ResultsDashboard({
 
         <button
           onClick={() => setActiveTab('mvp')}
-          className={`px-4 py-2.5 rounded-t-xl text-xs font-semibold tracking-tight transition-all flex items-center gap-2 focus:outline-none ${
-            activeTab === 'mvp' 
-              ? 'bg-brand-orange/10 border-b-2 border-brand-orange text-white bg-white/5' 
-              : 'text-white/50 hover:text-white hover:bg-white/[0.02]'
-          }`}
+          className={`px-4 py-2.5 rounded-t-xl text-xs font-semibold tracking-tight transition-all flex items-center gap-2 focus:outline-none ${activeTab === 'mvp'
+            ? 'bg-brand-orange/10 border-b-2 border-brand-orange text-white bg-white/5'
+            : 'text-white/50 hover:text-white hover:bg-white/[0.02]'
+            }`}
         >
           <Cpu size={14} />
           <span>Product & Tech</span>
@@ -656,11 +653,10 @@ export default function ResultsDashboard({
 
         <button
           onClick={() => setActiveTab('pitch')}
-          className={`px-4 py-2.5 rounded-t-xl text-xs font-semibold tracking-tight transition-all flex items-center gap-2 focus:outline-none ${
-            activeTab === 'pitch' 
-              ? 'bg-brand-orange/10 border-b-2 border-brand-orange text-white bg-white/5' 
-              : 'text-white/50 hover:text-white hover:bg-white/[0.02]'
-          }`}
+          className={`px-4 py-2.5 rounded-t-xl text-xs font-semibold tracking-tight transition-all flex items-center gap-2 focus:outline-none ${activeTab === 'pitch'
+            ? 'bg-brand-orange/10 border-b-2 border-brand-orange text-white bg-white/5'
+            : 'text-white/50 hover:text-white hover:bg-white/[0.02]'
+            }`}
         >
           <Heart size={14} />
           <span>Elevator Pitch</span>
@@ -668,11 +664,10 @@ export default function ResultsDashboard({
 
         <button
           onClick={() => setActiveTab('finance')}
-          className={`px-4 py-2.5 rounded-t-xl text-xs font-semibold tracking-tight transition-all flex items-center gap-2 focus:outline-none ${
-            activeTab === 'finance' 
-              ? 'bg-brand-orange/10 border-b-2 border-brand-orange text-white bg-white/5' 
-              : 'text-white/50 hover:text-white hover:bg-white/[0.02]'
-          }`}
+          className={`px-4 py-2.5 rounded-t-xl text-xs font-semibold tracking-tight transition-all flex items-center gap-2 focus:outline-none ${activeTab === 'finance'
+            ? 'bg-brand-orange/10 border-b-2 border-brand-orange text-white bg-white/5'
+            : 'text-white/50 hover:text-white hover:bg-white/[0.02]'
+            }`}
         >
           <Coins size={14} />
           <span>Monetization & Forecast</span>
@@ -681,7 +676,7 @@ export default function ResultsDashboard({
 
       {/* Tabs Content Cluster */}
       <div className="space-y-8 min-h-[300px]">
-        
+
         {/* Tab 1: Validation & Market */}
         {(activeTab === 'market' || window.matchMedia('print').matches) && (
           <div className="grid gap-6 md:grid-cols-2">
@@ -736,9 +731,9 @@ export default function ResultsDashboard({
                 <ShieldAlert size={13} />
                 <span>Direct Competitor Mapping</span>
               </h3>
-              
+
               <div className="grid gap-6 sm:grid-cols-3">
-                {result.competitorAnalysis.map((comp, idx) => (
+                {(result.competitorAnalysis ?? []).map((comp, idx) => (
                   <div key={idx} className="rounded-xl bg-white/[0.02] border border-white/5 p-4 flex flex-col justify-between">
                     <div>
                       <span className="block text-sm font-bold text-white mb-1.5">{comp.name}</span>
@@ -773,49 +768,87 @@ export default function ResultsDashboard({
               <div className="grid gap-4 sm:grid-cols-4">
                 {/* Strengths */}
                 <div className="rounded-xl border border-emerald-500/10 bg-emerald-500/[0.01] p-4">
-                  <span className="block text-xs font-bold text-emerald-400 font-mono uppercase mb-2">Strengths</span>
+                  <span className="block text-xs font-bold text-emerald-400 font-mono uppercase mb-2">
+                    Strengths
+                  </span>
+
                   <ul className="space-y-1.5 text-xs text-brand-secondary">
-                    {result.swotAnalysis.strengths.map((s, itemIdx) => <li key={itemIdx} className="flex gap-1.5"><span className="text-emerald-500 font-bold">•</span>{s}</li>)}
+                    {(result.swotAnalysis?.strengths ?? []).map((item, index) => (
+                      <li key={index}>{item}</li>
+                    ))}
                   </ul>
                 </div>
+
                 {/* Weaknesses */}
                 <div className="rounded-xl border border-amber-500/10 bg-amber-500/[0.01] p-4">
-                  <span className="block text-xs font-bold text-amber-400 font-mono uppercase mb-2">Weaknesses</span>
+                  <span className="block text-xs font-bold text-amber-400 font-mono uppercase mb-2">
+                    Weaknesses
+                  </span>
+
                   <ul className="space-y-1.5 text-xs text-brand-secondary">
-                    {result.swotAnalysis.weaknesses.map((w, itemIdx) => <li key={itemIdx} className="flex gap-1.5"><span className="text-amber-500 font-bold">•</span>{w}</li>)}
+                    {(result.swotAnalysis?.weaknesses ?? []).map((w, itemIdx) => (
+                      <li key={itemIdx} className="flex gap-1.5">
+                        <span className="text-amber-500 font-bold">•</span>
+                        {w}
+                      </li>
+                    ))}
                   </ul>
                 </div>
+
                 {/* Opportunities */}
                 <div className="rounded-xl border border-blue-500/10 bg-blue-500/[0.01] p-4">
-                  <span className="block text-xs font-bold text-blue-400 font-mono uppercase mb-2">Opportunities</span>
+                  <span className="block text-xs font-bold text-blue-400 font-mono uppercase mb-2">
+                    Opportunities
+                  </span>
+
                   <ul className="space-y-1.5 text-xs text-brand-secondary">
-                    {result.swotAnalysis.opportunities.map((o, itemIdx) => <li key={itemIdx} className="flex gap-1.5"><span className="text-blue-400 font-bold">•</span>{o}</li>)}
+                    {(result.swotAnalysis?.opportunities ?? []).map((o, itemIdx) => (
+                      <li key={itemIdx} className="flex gap-1.5">
+                        <span className="text-blue-400 font-bold">•</span>
+                        {o}
+                      </li>
+                    ))}
                   </ul>
                 </div>
+
                 {/* Threats */}
                 <div className="rounded-xl border border-red-500/10 bg-red-500/[0.01] p-4">
-                  <span className="block text-xs font-bold text-red-400 font-mono uppercase mb-2">Threats</span>
+                  <span className="block text-xs font-bold text-red-400 font-mono uppercase mb-2">
+                    Threats
+                  </span>
+
                   <ul className="space-y-1.5 text-xs text-brand-secondary">
-                    {result.swotAnalysis.threats.map((t, itemIdx) => <li key={itemIdx} className="flex gap-1.5"><span className="text-red-400 font-bold">•</span>{t}</li>)}
+                    {(result.swotAnalysis?.threats ?? []).map((t, itemIdx) => (
+                      <li key={itemIdx} className="flex gap-1.5">
+                        <span className="text-red-400 font-bold">•</span>
+                        {t}
+                      </li>
+                    ))}
                   </ul>
                 </div>
+
               </div>
             </div>
 
-            {/* Go to market channels */}
+            {/* Go To Market */}
             <div className="rounded-2xl border border-white/5 bg-white/[0.01] p-6 glass-panel">
               <h3 className="text-xs font-mono uppercase tracking-widest text-brand-orange mb-3 flex items-center gap-1.5">
                 <Gift size={13} />
                 <span>Go-To-Market Strategic Channels</span>
               </h3>
+
               <div className="flex flex-wrap gap-2">
-                {result.goToMarket.map((itm, idx) => (
-                  <span key={idx} className="rounded-full bg-brand-orange/10 border border-brand-orange/20 px-3 py-1 text-xs text-brand-accent font-medium">
+                {(result.goToMarket ?? []).map((itm, idx) => (
+                  <span
+                    key={idx}
+                    className="rounded-full bg-brand-orange/10 border border-brand-orange/20 px-3 py-1 text-xs text-brand-accent font-medium"
+                  >
                     {itm}
                   </span>
                 ))}
               </div>
             </div>
+
           </div>
         )}
 
@@ -830,7 +863,7 @@ export default function ResultsDashboard({
               </h3>
 
               <div className="space-y-4">
-                {result.mvpFeatures.map((mvp, idx) => (
+                {(result.mvpFeatures ?? []).map((mvp, idx) => (
                   <div key={idx} className="p-4 rounded-xl bg-white/[0.01] border border-white/5">
                     <span className="block text-xs font-bold text-white font-display mb-2">{mvp.phase}</span>
                     <ul className="space-y-1 text-xs text-brand-secondary">
@@ -857,19 +890,21 @@ export default function ResultsDashboard({
                 <div className="space-y-3.5">
                   <div className="grid grid-cols-3 text-xs leading-relaxed border-b border-white/5 pb-2.5">
                     <span className="font-semibold text-white/50">Frontend</span>
-                    <span className="col-span-2 text-white">{result.technicalArchitecture.frontend}</span>
+                    <span className="col-span-2 text-white">{result.technicalArchitecture?.frontend ?? "Not available"}</span>
                   </div>
                   <div className="grid grid-cols-3 text-xs leading-relaxed border-b border-white/5 pb-2.5">
                     <span className="font-semibold text-white/50">Backend</span>
-                    <span className="col-span-2 text-white">{result.technicalArchitecture.backend}</span>
+                    <span className="col-span-2 text-white">{result.technicalArchitecture?.backend ?? "Not available"
+                    }</span>
                   </div>
                   <div className="grid grid-cols-3 text-xs leading-relaxed border-b border-white/5 pb-2.5">
                     <span className="font-semibold text-white/50">Database</span>
-                    <span className="col-span-2 text-white">{result.technicalArchitecture.database}</span>
+                    <span className="col-span-2 text-white">{result.technicalArchitecture?.database ?? "Not available"
+                    }</span>
                   </div>
                   <div className="grid grid-cols-3 text-xs leading-relaxed">
                     <span className="font-semibold text-white/50">Infrastructure</span>
-                    <span className="col-span-2 text-white">{result.technicalArchitecture.architecture}</span>
+                    <span className="col-span-2 text-white">{result.technicalArchitecture?.architecture ?? "Not available"}</span>
                   </div>
                 </div>
               </div>
@@ -881,7 +916,7 @@ export default function ResultsDashboard({
                   <span>30-Day Launchpad checklists</span>
                 </h3>
                 <div className="space-y-3.5">
-                  {result.launchPlan.map((plan, idx) => (
+                  {(result.launchPlan ?? []).map((plan, idx) => (
                     <div key={idx} className="flex gap-3 text-xs leading-relaxed">
                       <span className="font-mono text-brand-orange font-bold min-w-[70px] uppercase">{plan.day}</span>
                       <span className="text-brand-secondary">{plan.task}</span>
@@ -918,7 +953,7 @@ export default function ResultsDashboard({
                 </h3>
 
                 <div className="space-y-2.5 text-xs">
-                  {result.startupNames.map((nm, idx) => {
+                  {(result.startupNames ?? []).map((nm, idx) => {
                     const domain = result.domainSuggestions[idx] || `${nm.toLowerCase()}.co`;
                     return (
                       <div key={idx} className="flex justify-between items-center border-b border-white/5 pb-2">
@@ -943,23 +978,26 @@ export default function ResultsDashboard({
               <div className="space-y-4 text-xs">
                 <div className="p-3.5 rounded-xl bg-white/[0.01] border border-white/5">
                   <span className="block font-bold text-white mb-1 uppercase tracking-tight">Venture Headline</span>
-                  <p className="text-brand-secondary leading-normal">{result.investorPitch.headline}</p>
+                  <p className="text-brand-secondary leading-normal">{result.investorPitch?.headline ?? "N/A"}</p>
                 </div>
                 <div className="p-3.5 rounded-xl bg-white/[0.01] border border-white/5">
                   <span className="block font-bold text-white mb-1 uppercase tracking-tight">The Hook Problem</span>
-                  <p className="text-brand-secondary leading-normal">{result.investorPitch.problem}</p>
+                  <p className="text-brand-secondary leading-normal">{result.investorPitch?.problem ?? "N/A"
+                  }</p>
                 </div>
                 <div className="p-3.5 rounded-xl bg-white/[0.01] border border-white/5">
                   <span className="block font-bold text-white mb-1 uppercase tracking-tight">The Hook Solution</span>
-                  <p className="text-brand-secondary leading-normal">{result.investorPitch.solution}</p>
+                  <p className="text-brand-secondary leading-normal">{result.investorPitch?.solution ?? "N/A"
+                  }</p>
                 </div>
                 <div className="p-3.5 rounded-xl bg-white/[0.01] border border-white/5">
                   <span className="block font-bold text-white mb-1 uppercase tracking-tight">Competitor & TAM sizes</span>
-                  <p className="text-brand-secondary leading-normal">{result.investorPitch.marketSize}</p>
+                  <p className="text-brand-secondary leading-normal">{result.investorPitch?.marketSize ?? "N/A"
+                  }</p>
                 </div>
                 <div className="p-3.5 rounded-xl bg-white/[0.01] border border-white/5">
                   <span className="block font-bold text-white mb-1 uppercase tracking-tight">Venture Team Structure Required</span>
-                  <p className="text-brand-secondary leading-normal">{result.investorPitch.teamNeeded}</p>
+                  <p className="text-brand-secondary leading-normal">{result.investorPitch?.teamNeeded ?? "N/A"}</p>
                 </div>
               </div>
             </div>
@@ -969,7 +1007,7 @@ export default function ResultsDashboard({
         {/* Tab 5: Monetization strategy & financial forecast */}
         {(activeTab === 'finance' && !window.matchMedia('print').matches) && (
           <div className="grid gap-6 md:grid-cols-12">
-            
+
             {/* SaaS Monetization plans */}
             <div className="md:col-span-6 rounded-2xl border border-white/5 bg-white/[0.01] p-6 glass-panel space-y-4">
               <h3 className="text-xs font-mono uppercase tracking-widest text-brand-orange flex items-center gap-1.5 mb-1">
@@ -1000,7 +1038,7 @@ export default function ResultsDashboard({
               </h3>
 
               <div className="space-y-3.5">
-                {result.revenueForecast.map((forecast, idx) => (
+                {(result.revenueForecast ?? []).map((forecast, idx) => (
                   <div key={idx} className="p-4 rounded-xl bg-white/[0.01] border border-white/5 flex items-center justify-between">
                     <div>
                       <span className="text-xs font-mono text-white/50 block">PERIOD</span>
@@ -1025,11 +1063,11 @@ export default function ResultsDashboard({
       {/* Printable Report Only Sections (All categories expanded together when user prints the file!) */}
       <div className="hidden print-only space-y-8 mt-12 border-t border-dashed border-black/20 pt-12 text-black">
         <h2 className="text-xl font-bold font-display uppercase border-b-2 border-black pb-2">Complete Startup Evaluation Dossier</h2>
-        
+
         <div className="space-y-4">
           <h4 className="font-bold text-sm">Executive Idea Summary</h4>
           <p className="text-xs leading-relaxed">{result.ideaSummary}</p>
-          
+
           <h4 className="font-bold text-sm">Problem Statement</h4>
           <p className="text-xs leading-relaxed">{result.problemStatement}</p>
 
@@ -1043,27 +1081,39 @@ export default function ResultsDashboard({
                 <span className="font-bold text-xs uppercase block">{c.name}</span>
                 <p className="text-[10px] text-black/70 mb-2">{c.description}</p>
                 <div className="text-[9px]">
-                  <strong>Strengths:</strong> {c.strengths.join(", ")} <br/>
+                  <strong>Strengths:</strong> {c.strengths.join(", ")} <br />
                   <strong>Weaknesses:</strong> {c.weaknesses.join(", ")}
                 </div>
               </div>
             ))}
           </div>
 
-          <h4 className="font-bold text-sm">System Architecture</h4>
-          <p className="text-xs leading-relaxed">
-            Frontend: {result.technicalArchitecture?.frontend ?? "Not provided"} 
-            {result.technicalArchitecture?.backend ?? "Not provided"}
-            {result.technicalArchitecture?.database ?? "Not provided"}
-            {result.technicalArchitecture?.architecture ?? "Not provided"}
-          </p>
-
           <h4 className="font-bold text-sm">Revenue forecasting & pricing models</h4>
-          <p className="text-xs leading-relaxed">
-            {result.monetizationStrategy.map(m => `${m.model}: (${m.pricing}) - ${m.description}`).join(' | ')}
-          </p>
+          <h4 className="font-bold text-sm">Revenue forecasting & pricing models</h4>
+
+          <div className="space-y-3">
+            {(result.monetizationStrategy ?? []).map((item, index) => (
+              <div
+                key={index}
+                className="border border-black/20 p-3 rounded"
+              >
+                <div>
+                  <strong>Model:</strong> {item?.model ?? "N/A"}
+                </div>
+
+                <div>
+                  <strong>Pricing:</strong> {item?.pricing ?? "N/A"}
+                </div>
+
+                <div>
+                  <strong>Description:</strong> {item?.description ?? "N/A"}
+                </div>
+              </div>
+            ))}
+          </div>
+
         </div>
       </div>
     </div>
-  );
-}
+  )
+};

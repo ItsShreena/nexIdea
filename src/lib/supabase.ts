@@ -19,64 +19,113 @@ const getStorageKey = (userId: string) => `nexidea_reports_user_${userId}`;
 /**
  * Saves a report associated with an authenticated user
  */
+/**
+ * Saves a report associated with an authenticated user
+ */
 export async function saveReport(
   userId: string,
   name: string,
   ideaDescription: string,
   result: AnalysisResult
 ): Promise<SavedReport> {
-  const analysisId = 'an_' + Math.random().toString(36).substring(2, 15);
+
+  const analysisId =
+    'an_' + Math.random().toString(36).substring(2, 15);
+
   const reportPayload: SavedReport = {
     id: analysisId,
-    userId: userId,
+    userId,
     name,
     ideaDescription,
     result,
     createdAt: new Date().toISOString()
   };
 
-  // If Supabase is configured and connected, we can attempt to write to the DB.
-  // We wrap this in a try-catch and fallback to local storage for the specific logged-in user 
-  // so the experience is pristine and 100% resilient.
+  // Guest users -> local only
+  if (
+    userId === "guest-sandbox" ||
+    !userId.includes("-")
+  ) {
+    const userKey = getStorageKey(userId);
+
+    const existingReportsRaw =
+      localStorage.getItem(userKey);
+
+    const existingReports: SavedReport[] =
+      existingReportsRaw
+        ? JSON.parse(existingReportsRaw)
+        : [];
+
+    existingReports.unshift(reportPayload);
+
+    localStorage.setItem(
+      userKey,
+      JSON.stringify(existingReports)
+    );
+
+    return reportPayload;
+  }
+
+  // Real authenticated users
   if (supabase) {
     try {
-      const { data, error } = await supabase
-        .from('startup_analyses')
-        .insert([{
-          id: analysisId,
-          user_id: userId,
-          name,
-          idea_description: ideaDescription,
-          result,
-          created_at: reportPayload.createdAt
-        }]);
-      
+      const { error } = await supabase
+        .from("startup_analyses")
+        .insert([
+          {
+            id: analysisId,
+            user_id: userId,
+            name,
+            idea_description: ideaDescription,
+            result,
+            created_at: reportPayload.createdAt
+          }
+        ]);
+
       if (error) {
-        console.warn("Supabase writing failed, saving to user-specific secure local state:", error);
+        console.warn(
+          "Supabase writing failed:",
+          error
+        );
       } else {
-        console.log("Saved report to Supabase database successfully");
+        console.log(
+          "Saved report to Supabase successfully"
+        );
       }
     } catch (e) {
-      console.warn("Supabase database error or table not found. Falling back to secure local state:", e);
+      console.warn(
+        "Supabase error:",
+        e
+      );
     }
   }
 
-  // Persist locally under user-specific namespace (highly reliable, no mocks)
+  // Local backup for all users
   const userKey = getStorageKey(userId);
-  const existingReportsRaw = localStorage.getItem(userKey);
-  const existingReports: SavedReport[] = existingReportsRaw ? JSON.parse(existingReportsRaw) : [];
+
+  const existingReportsRaw =
+    localStorage.getItem(userKey);
+
+  const existingReports: SavedReport[] =
+    existingReportsRaw
+      ? JSON.parse(existingReportsRaw)
+      : [];
+
   existingReports.unshift(reportPayload);
-  localStorage.setItem(userKey, JSON.stringify(existingReports));
+
+  localStorage.setItem(
+    userKey,
+    JSON.stringify(existingReports)
+  );
 
   return reportPayload;
 }
-
 /**
  * Lists all reports for an authenticated user
  */
 export async function getReports(userId: string): Promise<SavedReport[]> {
   const userKey = getStorageKey(userId);
-  
+
   // Try retrieving from Supabase first if available
   if (supabase) {
     try {
@@ -119,7 +168,7 @@ export async function getReportById(reportId: string, userId?: string | null): P
         .select('*')
         .eq('id', reportId)
         .single();
-        
+
       if (!error && data) {
         return {
           id: data.id,
@@ -150,7 +199,7 @@ export async function getReportById(reportId: string, userId?: string | null): P
         const list: SavedReport[] = JSON.parse(localStorage.getItem(key) || '[]');
         const found = list.find(r => r.id === reportId);
         if (found) return found;
-      } catch {}
+      } catch { }
     }
   }
 
@@ -169,7 +218,7 @@ export async function deleteReport(reportId: string, userId: string): Promise<vo
         .delete()
         .eq('id', reportId)
         .eq('user_id', userId);
-        
+
       if (error) {
         console.warn("Supabase database delete failed:", error);
       }

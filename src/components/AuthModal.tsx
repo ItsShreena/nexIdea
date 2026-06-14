@@ -22,7 +22,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalP
   const handleGuestBypass = () => {
     setError('');
     const demoUser: User = {
-      id: 'guest-sandbox',
+      id: crypto.randomUUID(),
       email: 'guest@nexidea.co',
       createdAt: new Date().toISOString()
     };
