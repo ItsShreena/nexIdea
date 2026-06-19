@@ -529,7 +529,7 @@ export default function ResultsDashboard({
       </div>
 
       {/* Speculative Science Impediment Alert Box */}
-      {result.isSpeculativeScience && (
+      {result?.isSpeculativeScience && (
         <div className="mb-8 rounded-xl border border-red-950 bg-red-950/10 p-6 shadow-xl relative overflow-hidden backdrop-blur-sm animate-pulse">
           <div className="flex items-start gap-3.5">
             <div className="h-9 w-9 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 shrink-0">

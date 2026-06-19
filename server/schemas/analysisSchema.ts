@@ -1,21 +1,17 @@
 import { z } from "zod";
 
 export const AnalysisSchema = z.object({
-  // Core Analysis
   ideaSummary: z.string(),
   problemStatement: z.string(),
   targetAudience: z.string(),
   marketOpportunity: z.string(),
 
-  // Overall Score
   overallScore: z.number(),
 
-  // Startup Branding
   startupNames: z.array(z.string()).default([]),
   domainSuggestions: z.array(z.string()).default([]),
   elevatorPitch: z.string().default(""),
 
-  // Competitor Analysis
   competitorAnalysis: z.array(
     z.object({
       name: z.string(),
@@ -25,7 +21,6 @@ export const AnalysisSchema = z.object({
     })
   ).default([]),
 
-  // SWOT Analysis
   swotAnalysis: z.object({
     strengths: z.array(z.string()).default([]),
     weaknesses: z.array(z.string()).default([]),
@@ -38,10 +33,8 @@ export const AnalysisSchema = z.object({
     threats: [],
   }),
 
-  // Go-To-Market
   goToMarket: z.array(z.string()).default([]),
 
-  // Monetization
   monetizationStrategy: z.array(
     z.object({
       model: z.string(),
@@ -50,7 +43,6 @@ export const AnalysisSchema = z.object({
     })
   ).default([]),
 
-  // MVP Roadmap
   mvpFeatures: z.array(
     z.object({
       phase: z.string(),
@@ -58,7 +50,6 @@ export const AnalysisSchema = z.object({
     })
   ).default([]),
 
-  // Technical Architecture
   technicalArchitecture: z.object({
     frontend: z.string().default(""),
     backend: z.string().default(""),
@@ -71,7 +62,6 @@ export const AnalysisSchema = z.object({
     architecture: "",
   }),
 
-  // Investor Pitch Deck
   investorPitch: z.object({
     headline: z.string().default(""),
     problem: z.string().default(""),
@@ -88,45 +78,37 @@ export const AnalysisSchema = z.object({
     teamNeeded: "",
   }),
 
-  // Detailed Scores
   scores: z.object({
     technicalFeasibility: z.object({
       score: z.number(),
       reasoning: z.string(),
     }),
-
     scientificFeasibility: z.object({
       score: z.number(),
       reasoning: z.string(),
     }),
-
     regulatoryFeasibility: z.object({
       score: z.number(),
       reasoning: z.string(),
     }),
-
     marketDemand: z.object({
       score: z.number(),
       reasoning: z.string(),
     }),
-
     revenuePotential: z.object({
       score: z.number(),
       reasoning: z.string(),
     }),
-
     competition: z.object({
       score: z.number(),
       reasoning: z.string(),
     }),
-
     executionComplexity: z.object({
       score: z.number(),
       reasoning: z.string(),
     }),
   }),
 
-  // Launch Plan
   launchPlan: z.array(
     z.object({
       day: z.string(),
@@ -134,16 +116,14 @@ export const AnalysisSchema = z.object({
     })
   ).default([]),
 
-  // Revenue Forecast
-  revenueForecast: z.array(
-    z.object({
-      year: z.string(),
-      revenue: z.string(),
-      expenses: z.string(),
-    })
-  ).default([]),
+revenueForecast: z.array(
+  z.object({
+    year: z.string(),
+    revenue: z.string(),
+    expenses: z.string(),
+  })
+).default([]),
 
-  // Speculative Science Detection
   isSpeculativeScience: z.boolean().default(false),
 
   scientificLimitationDetails: z.string().optional(),

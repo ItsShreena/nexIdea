@@ -15,29 +15,6 @@ async function startServer() {
   app.use(express.json({ limit: "1mb" }));
   app.use(express.urlencoded({ extended: true, limit: "1mb" }));
 
-  /**
-   * =========================
-   * WAITLIST API (demo)
-   * =========================
-   */
-  app.post("/api/waitlist", (req, res) => {
-    try {
-      const { email } = req.body;
-
-      if (!email || typeof email !== "string" || !email.includes("@")) {
-        return res
-          .status(400)
-          .json({ error: "Please enter a valid email address." });
-      }
-
-      return res.json({
-        success: true,
-        position: Math.floor(Math.random() * 50) + 107,
-      });
-    } catch {
-      return res.status(500).json({ error: "Waitlist system failure." });
-    }
-  });
 
   /**
    * =========================
@@ -54,11 +31,15 @@ async function startServer() {
       });
     }
     app.get("/favicon.ico", (req, res) => {
-  res.status(204).end();
-});
+      res.status(204).end();
+    });
 
     try {
       const analysisResult = await analyzeStartupIdea(name, idea);
+      console.log(
+        "RESULT RETURNED:",
+        JSON.stringify(analysisResult, null, 2)
+      );
       return res.json({ result: analysisResult });
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Unknown error";
