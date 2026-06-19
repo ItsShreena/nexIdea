@@ -124,6 +124,7 @@ revenueForecast: z.array(
   })
 ).default([]),
 
+
   isSpeculativeScience: z.boolean().default(false),
 
   scientificLimitationDetails: z.string().optional(),

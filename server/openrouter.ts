@@ -104,17 +104,35 @@ The JSON MUST match EXACTLY this structure.
   },
 
   "launchPlan": [
-    {
-      "day": "string",
-      "task": "string"
-    }
-  ],
+  {
+    "day": "string",
+    "task": "string"
+  }
+],
 
- 
-  "isSpeculativeScience": false,
-  "scientificLimitationDetails": ""
+"revenueForecast": [
+    {
+    year: "Year 1",
+    revenue: "N/A",
+    expenses: "N/A",
+  },
+  {
+    year: "Year 2",
+    revenue: "N/A",
+    expenses: "N/A",
+  },
+  {
+    year: "Year 3",
+    revenue: "N/A",
+    expenses: "N/A",
+  },
+],
+
+"isSpeculativeScience": false,
+"scientificLimitationDetails": ""
 }
 
+Adhere strictly to the schema. Do not add, remove, or alter fields.
 Never add fields not listed above.
 Never omit fields.
 Return JSON only.
@@ -221,6 +239,7 @@ function getFallback(): AnalysisResult {
         score: 5,
         reasoning: "",
       },
+      
     },
 
     launchPlan: [],
@@ -352,15 +371,39 @@ Return ONLY JSON.
       return getFallback();
     }
 
-    const cleaned = normalizeStrict(parsed);
+
+
+    const cleaned: any = normalizeStrict(parsed);
 
     console.log(
       "AI CONTENT:",
       JSON.stringify(cleaned, null, 2)
     );
+    // FIX SCORES > 10
+    if (cleaned.overallScore > 10) {
+      cleaned.overallScore = Math.round(
+        cleaned.overallScore / 10
+      );
+    }
+
+    Object.values(cleaned.scores || {}).forEach(
+      (item: any) => {
+        if (
+          item &&
+          typeof item === "object" &&
+          item.score > 10
+        ) {
+          item.score = Math.round(
+            item.score / 10
+          );
+        }
+      }
+    );
 
     const validation =
       AnalysisSchema.safeParse(cleaned);
+
+   
 
     if (!validation.success) {
       console.error(
