@@ -1,8 +1,12 @@
 # nexIdea
 
 > AI-powered system that evaluates startup ideas, generates structured insights, and helps founders validate business concepts instantly.
+> NexIdea is a full-stack AI SaaS application that analyzes startup ideas using a structured LLM pipeline.
+It transforms raw business ideas into actionable intelligence, including scoring, monetization strategies, market analysis, risk evaluation, and improvement suggestions.
 
-![GitHub stars](https://img.shields.io/github/stars/ItsShreena/nexIdea?style=for-the-badge&logo=github) ![GitHub forks](https://img.shields.io/github/forks/ItsShreena/nexIdea?style=for-the-badge&logo=github) ![GitHub issues](https://img.shields.io/github/issues/ItsShreena/nexIdea?style=for-the-badge&logo=github) ![Last commit](https://img.shields.io/github/last-commit/ItsShreena/nexIdea?style=for-the-badge&logo=github) ![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white) ![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=white) ![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white) ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+The system is built with strict schema validation to ensure deterministic and reliable AI outputs.
+
+![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white) ![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=white) ![Supabase](https://img.shields.io/badge/Supabase-3FCF8E?style=for-the-badge&logo=supabase&logoColor=white) ![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white) ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white) ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 
 ## 📑 Table of Contents
 
@@ -160,11 +164,6 @@ GET *
 2. Install dependencies: `npm install` (or `yarn` / `pnpm install` / `bun install`)
 3. Start the dev server: see the **Quick Start** above
 
-## 🚢 Deployment
-
-### Vercel
-
-This project is configured for [Vercel](https://vercel.com). Push to the connected branch or run `vercel` locally.
 
 ## 👥 Contributing
 
@@ -179,5 +178,4 @@ Contributions are welcome! Here's the standard flow:
 
 Please follow the existing code style and include tests for new behavior where applicable.
 
----
-*This README was generated with ❤️ by [ReadmeBuddy](https://readmebuddy.com)*
+
