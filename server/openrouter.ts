@@ -1,4 +1,4 @@
-import { AnalysisSchema, AnalysisResult } from "./schemas/analysisSchema";
+import { AnalysisResult, AnalysisSchema } from "./schemas/analysisSchema";
 import crypto from "crypto";
 
 const analysisCache = new Map<string, AnalysisResult>();
@@ -6,23 +6,21 @@ const analysisCache = new Map<string, AnalysisResult>();
 const BASE_PROMPT = `
 You are a startup analyst.
 
-IMPORTANT:
+Return only valid JSON. Do not wrap it in markdown. Do not include commentary.
+Every score must be an integer from 0 to 10. Never use a 0-100 scale or decimals.
+If a field is uncertain, provide a best-effort string or an empty array; do not use null.
 
-Return ONLY valid JSON.
-
-The JSON MUST match EXACTLY this structure.
+The response must match this exact object shape:
 
 {
   "ideaSummary": "string",
   "problemStatement": "string",
   "targetAudience": "string",
   "marketOpportunity": "string",
-  "overallScore": 0,
-
+  "overallScore": 5,
   "startupNames": ["string"],
   "domainSuggestions": ["string"],
   "elevatorPitch": "string",
-
   "competitorAnalysis": [
     {
       "name": "string",
@@ -31,16 +29,13 @@ The JSON MUST match EXACTLY this structure.
       "weaknesses": ["string"]
     }
   ],
-
   "swotAnalysis": {
     "strengths": ["string"],
     "weaknesses": ["string"],
     "opportunities": ["string"],
     "threats": ["string"]
   },
-
   "goToMarket": ["string"],
-
   "monetizationStrategy": [
     {
       "model": "string",
@@ -48,21 +43,18 @@ The JSON MUST match EXACTLY this structure.
       "description": "string"
     }
   ],
-
   "mvpFeatures": [
     {
       "phase": "string",
       "features": ["string"]
     }
   ],
-
   "technicalArchitecture": {
     "frontend": "string",
     "backend": "string",
     "database": "string",
     "architecture": "string"
   },
-
   "investorPitch": {
     "headline": "string",
     "problem": "string",
@@ -71,81 +63,45 @@ The JSON MUST match EXACTLY this structure.
     "businessModel": "string",
     "teamNeeded": "string"
   },
-
   "scores": {
-    "technicalFeasibility": {
-      "score": 0,
-      "reasoning": "string"
-    },
-    "scientificFeasibility": {
-      "score": 0,
-      "reasoning": "string"
-    },
-    "regulatoryFeasibility": {
-      "score": 0,
-      "reasoning": "string"
-    },
-    "marketDemand": {
-      "score": 0,
-      "reasoning": "string"
-    },
-    "revenuePotential": {
-      "score": 0,
-      "reasoning": "string"
-    },
-    "competition": {
-      "score": 0,
-      "reasoning": "string"
-    },
-    "executionComplexity": {
-      "score": 0,
-      "reasoning": "string"
-    }
+    "technicalFeasibility": { "score": 5, "reasoning": "string" },
+    "scientificFeasibility": { "score": 5, "reasoning": "string" },
+    "regulatoryFeasibility": { "score": 5, "reasoning": "string" },
+    "marketDemand": { "score": 5, "reasoning": "string" },
+    "revenuePotential": { "score": 5, "reasoning": "string" },
+    "competition": { "score": 5, "reasoning": "string" },
+    "executionComplexity": { "score": 5, "reasoning": "string" }
   },
-
   "launchPlan": [
-  {
-    "day": "string",
-    "task": "string"
-  }
-],
-
-"revenueForecast": [
     {
-    year: "Year 1",
-    revenue: "N/A",
-    expenses: "N/A",
-  },
-  {
-    year: "Year 2",
-    revenue: "N/A",
-    expenses: "N/A",
-  },
-  {
-    year: "Year 3",
-    revenue: "N/A",
-    expenses: "N/A",
-  },
-],
-
-"isSpeculativeScience": false,
-"scientificLimitationDetails": ""
+      "day": "string",
+      "task": "string"
+    }
+  ],
+  "revenueForecast": [
+    {
+      "year": "Year 1",
+      "revenue": "string",
+      "expenses": "string"
+    },
+    {
+      "year": "Year 2",
+      "revenue": "string",
+      "expenses": "string"
+    },
+    {
+      "year": "Year 3",
+      "revenue": "string",
+      "expenses": "string"
+    }
+  ],
+  "isSpeculativeScience": false,
+  "scientificLimitationDetails": "string"
 }
-
-Adhere strictly to the schema. Do not add, remove, or alter fields.
-Never add fields not listed above.
-Never omit fields.
-Return JSON only.
 `;
 
-function generateCacheKey(
-  name: string,
-  idea: string
-): string {
-  return crypto
-    .createHash("sha256")
-    .update(`${name}:${idea}`)
-    .digest("hex");
+function generateCacheKey(name: string, idea: string): string {
+  return crypto.createHash("sha256").update(`${name}:${idea}`).digest("hex");
 }
 
 function normalizeStrict(data: any): any {
@@ -166,41 +122,36 @@ function normalizeStrict(data: any): any {
   return data;
 }
 
+function clampScore(value: unknown): number {
+  return Math.max(0, Math.min(10, Math.round(Number(value) || 0)));
+}
+
 function getFallback(): AnalysisResult {
   return {
     ideaSummary: "Analysis unavailable",
     problemStatement: "Analysis unavailable",
     targetAudience: "Unknown",
     marketOpportunity: "Unknown",
-
     overallScore: 5,
-
     startupNames: [],
     domainSuggestions: [],
     elevatorPitch: "",
-
     competitorAnalysis: [],
-
     swotAnalysis: {
       strengths: [],
       weaknesses: [],
       opportunities: [],
       threats: [],
     },
-
     goToMarket: [],
-
     monetizationStrategy: [],
-
     mvpFeatures: [],
-
     technicalArchitecture: {
       frontend: "",
       backend: "",
       database: "",
       architecture: "",
     },
-
     investorPitch: {
       headline: "",
       problem: "",
@@ -209,43 +160,17 @@ function getFallback(): AnalysisResult {
       businessModel: "",
       teamNeeded: "",
     },
-
     scores: {
-      technicalFeasibility: {
-        score: 5,
-        reasoning: "",
-      },
-      scientificFeasibility: {
-        score: 5,
-        reasoning: "",
-      },
-      regulatoryFeasibility: {
-        score: 5,
-        reasoning: "",
-      },
-      marketDemand: {
-        score: 5,
-        reasoning: "",
-      },
-      revenuePotential: {
-        score: 5,
-        reasoning: "",
-      },
-      competition: {
-        score: 5,
-        reasoning: "",
-      },
-      executionComplexity: {
-        score: 5,
-        reasoning: "",
-      },
-      
+      technicalFeasibility: { score: 5, reasoning: "" },
+      scientificFeasibility: { score: 5, reasoning: "" },
+      regulatoryFeasibility: { score: 5, reasoning: "" },
+      marketDemand: { score: 5, reasoning: "" },
+      revenuePotential: { score: 5, reasoning: "" },
+      competition: { score: 5, reasoning: "" },
+      executionComplexity: { score: 5, reasoning: "" },
     },
-
     launchPlan: [],
-
     revenueForecast: [],
-
     isSpeculativeScience: false,
     scientificLimitationDetails: "",
   };
@@ -256,12 +181,16 @@ export async function analyzeStartupIdea(
   idea: string
 ): Promise<AnalysisResult> {
   const cacheKey = generateCacheKey(name, idea);
-
   const cached = analysisCache.get(cacheKey);
 
   if (cached) {
     console.log("[CACHE HIT]", name);
     return cached;
+  }
+
+  if (!process.env.OPENROUTER_API_KEY) {
+    console.error("[OPENROUTER ERROR] Missing OPENROUTER_API_KEY");
+    return getFallback();
   }
 
   const prompt = `
@@ -272,80 +201,54 @@ Idea:
 ${idea}
 
 Generate a complete startup analysis.
-
-Return ALL fields from the schema.
-Return ONLY JSON.
+Return all fields from the schema.
+Return only JSON.
 `;
 
   try {
     console.log("Starting OpenRouter request...");
     const start = Date.now();
 
-    const response = await fetch(
-      "https://openrouter.ai/api/v1/chat/completions",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-          "Content-Type": "application/json",
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "openai/gpt-4o-mini",
+        temperature: 0.2,
+        max_tokens: 3000,
+        response_format: {
+          type: "json_object",
         },
-        body: JSON.stringify({
-          model: "openai/gpt-4o-mini",
-
-          temperature: 0.2,
-
-          max_tokens: 3000,
-
-          response_format: {
-            type: "json_object",
+        messages: [
+          {
+            role: "system",
+            content: BASE_PROMPT,
           },
+          {
+            role: "user",
+            content: prompt,
+          },
+        ],
+      }),
+    });
 
-          messages: [
-            {
-              role: "system",
-              content: BASE_PROMPT,
-            },
-            {
-              role: "user",
-              content: prompt,
-            },
-          ],
-        }),
-      }
-    );
-
-    console.log(
-      "OpenRouter response time:",
-      Date.now() - start,
-      "ms"
-    );
+    console.log("OpenRouter response time:", Date.now() - start, "ms");
 
     if (!response.ok) {
       const errorText = await response.text();
-
-      console.error(
-        "[OPENROUTER ERROR]",
-        response.status,
-        errorText
-      );
-
-      throw new Error(
-        `OpenRouter ${response.status}: ${errorText}`
-      );
+      console.error("[OPENROUTER ERROR]", response.status, errorText);
+      throw new Error(`OpenRouter ${response.status}: ${errorText}`);
     }
 
     const data = await response.json();
+    const content = data?.choices?.[0]?.message?.content ?? "";
 
-    const content =
-      data?.choices?.[0]?.message?.content ?? "";
-    console.log(
-      "FINISH REASON:",
-      data?.choices?.[0]?.finish_reason
-    );
-    console.log(
-      "CONTENT LENGTH:",
-      content.length
-    );
+    console.log("FINISH REASON:", data?.choices?.[0]?.finish_reason);
+    console.log("CONTENT LENGTH:", content.length);
+
     if (!content) {
       console.error("[EMPTY RESPONSE]");
       return getFallback();
@@ -354,86 +257,40 @@ Return ONLY JSON.
     let parsed: any;
 
     try {
-      parsed = JSON.parse(
-        content.replace(/```json|```/g, "").trim()
-      );
+      parsed = JSON.parse(content.replace(/```json|```/g, "").trim());
     } catch (err) {
-      console.error(
-        "[JSON PARSE FAILED]",
-        err
-      );
-
-      console.error(
-        "[RAW CONTENT]",
-        content
-      );
-
+      console.error("[JSON PARSE FAILED]", err);
+      console.error("[RAW CONTENT]", content);
       return getFallback();
     }
-
-
 
     const cleaned: any = normalizeStrict(parsed);
 
-    console.log(
-      "AI CONTENT:",
-      JSON.stringify(cleaned, null, 2)
-    );
-    // FIX SCORES > 10
-    if (cleaned.overallScore > 10) {
-      cleaned.overallScore = Math.round(
-        cleaned.overallScore / 10
-      );
-    }
+    cleaned.overallScore = clampScore(cleaned?.overallScore);
 
-    Object.values(cleaned.scores || {}).forEach(
-      (item: any) => {
-        if (
-          item &&
-          typeof item === "object" &&
-          item.score > 10
-        ) {
-          item.score = Math.round(
-            item.score / 10
-          );
+    if (cleaned?.scores && typeof cleaned.scores === "object") {
+      for (const key of Object.keys(cleaned.scores)) {
+        const item: any = cleaned.scores[key];
+        if (item && typeof item === "object" && typeof item.score !== "undefined") {
+          item.score = clampScore(item.score);
         }
       }
-    );
+    }
 
-    const validation =
-      AnalysisSchema.safeParse(cleaned);
-
-   
+    const validation = AnalysisSchema.safeParse(cleaned);
 
     if (!validation.success) {
-      console.error(
-        "[SCHEMA VALIDATION FAILED]"
-      );
-
-      console.error(
-        validation.error.format()
-      );
-
+      console.error("[SCHEMA VALIDATION FAILED]");
+      console.error(validation.error.format());
       return getFallback();
     }
 
-    analysisCache.set(
-      cacheKey,
-      validation.data
-    );
-
-    console.log(
-      "[ANALYSIS SUCCESS]",
-      name
-    );
+    analysisCache.set(cacheKey, validation.data);
+    console.log("[ANALYSIS SUCCESS]", name);
 
     return validation.data;
   } catch (error) {
-    console.error(
-      "[ANALYSIS ERROR]",
-      error
-    );
-
+    console.error("[ANALYSIS ERROR]", error);
     return getFallback();
   }
 }

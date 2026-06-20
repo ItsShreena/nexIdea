@@ -6,21 +6,19 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const PORT = process.env.PORT || 3001;
+const PORT = Number(process.env.PORT || 3001);
+const isDev = process.env.npm_lifecycle_event === "dev";
 
 async function startServer() {
   const app = express();
 
-  // Body parsers
   app.use(express.json({ limit: "1mb" }));
   app.use(express.urlencoded({ extended: true, limit: "1mb" }));
 
+  app.get("/health", (req, res) => {
+    res.json({ ok: true, service: "nexidea" });
+  });
 
-  /**
-   * =========================
-   * AI ANALYSIS API
-   * =========================
-   */
   app.post("/api/analyze", async (req, res) => {
     const name = req.body?.name;
     const idea = req.body?.idea;
@@ -30,16 +28,15 @@ async function startServer() {
         error: "Startup Name and Venture Concept description are required.",
       });
     }
-    app.get("/favicon.ico", (req, res) => {
-      res.status(204).end();
-    });
 
     try {
       const analysisResult = await analyzeStartupIdea(name, idea);
-      console.log(
-        "RESULT RETURNED:",
-        JSON.stringify(analysisResult, null, 2)
-      );
+
+      console.log("[ANALYSIS SUCCESS]", {
+        name,
+        score: analysisResult.overallScore,
+      });
+
       return res.json({ result: analysisResult });
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Unknown error";
@@ -56,12 +53,20 @@ async function startServer() {
     }
   });
 
-  /**
-   * =========================
-   * VITE / STATIC SETUP
-   * =========================
-   */
-  if (process.env.NODE_ENV !== "production") {
+  app.post("/api/waitlist", (req, res) => {
+    const email = String(req.body?.email || "").trim();
+
+    if (!email || !email.includes("@")) {
+      return res.status(400).json({ error: "A valid email address is required." });
+    }
+
+    return res.json({
+      ok: true,
+      position: Math.floor(Date.now() / 1000) % 1000,
+    });
+  });
+
+  if (isDev) {
     const vite = await createViteServer({
       server: { middlewareMode: true },
       appType: "spa",
@@ -69,28 +74,17 @@ async function startServer() {
 
     app.use(vite.middlewares);
   } else {
-    const distPath = path.join(process.cwd(), "dist");
+    const distPath = path.resolve(process.cwd(), "dist");
 
     app.use(express.static(distPath));
-
     app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
     });
   }
 
-  /**
-   * =========================
-   * START SERVER SAFELY
-   * =========================
-   */
   app.listen(PORT, () => {
-    console.log(
-      `NexIdea Core Server running securely on http://0.0.0.0:${PORT}`
-    );
+    console.log(`NexIdea running on http://localhost:${PORT}`);
   });
 }
 
-startServer().catch((err) => {
-  console.error("❌ Server failed to start:", err);
-  process.exit(1);
-});
+startServer();
